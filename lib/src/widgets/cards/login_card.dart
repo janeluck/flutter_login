@@ -19,6 +19,7 @@ class _LoginCard extends StatefulWidget {
     this.loginAfterSignUp = true,
     this.hideProvidersTitle = false,
     this.introWidget,
+    this.hideAuth = false,
   });
 
   final AnimationController loadingController;
@@ -37,6 +38,7 @@ class _LoginCard extends StatefulWidget {
   final bool requireAdditionalSignUpFields;
   final Future<bool> Function() requireSignUpConfirmation;
   final Widget? introWidget;
+  final bool hideAuth;
 
   @override
   _LoginCardState createState() => _LoginCardState();
@@ -312,10 +314,11 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       if (auth.beforeAdditionalFieldsCallback != null) {
         error = await auth.beforeAdditionalFieldsCallback!(
           SignupData.fromSignupForm(
-              name: auth.email,
-              password: auth.password,
-              termsOfService: auth.getTermsOfServiceResults(),
-              additionalSignupData: auth.additionalSignupData,),
+            name: auth.email,
+            password: auth.password,
+            termsOfService: auth.getTermsOfServiceResults(),
+            additionalSignupData: auth.additionalSignupData,
+          ),
         );
         await control?.reverse();
         if (!DartHelper.isNullOrEmpty(error)) {
@@ -695,10 +698,12 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   if (widget.introWidget != null) widget.introWidget!,
-                  _buildUserField(textFieldWidth, messages, auth),
-                  const SizedBox(height: 20),
-                  _buildPasswordField(textFieldWidth, messages, auth),
-                  const SizedBox(height: 10),
+                  if (widget.hideAuth == false) ...[
+                    _buildUserField(textFieldWidth, messages, auth),
+                    const SizedBox(height: 20),
+                    _buildPasswordField(textFieldWidth, messages, auth),
+                    const SizedBox(height: 10),
+                  ]
                 ],
               ),
             ),
@@ -739,24 +744,26 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             width: cardWidth,
             child: Column(
               children: <Widget>[
-                if (!widget.hideForgotPasswordButton)
-                  _buildForgotPassword(theme, messages)
-                else
-                  SizedBox.fromSize(
-                    size: const Size.fromHeight(16),
-                  ),
-                _buildSubmitButton(theme, messages, auth),
-                if (!widget.hideSignUpButton)
-                  _buildSwitchAuthButton(theme, messages, auth, loginTheme)
-                else
-                  SizedBox.fromSize(
-                    size: const Size.fromHeight(10),
-                  ),
-                if (auth.loginProviders.isNotEmpty &&
-                    !widget.hideProvidersTitle)
-                  _buildProvidersTitleFirst(messages)
-                else
-                  Container(),
+                if (widget.hideAuth == false) ...[
+                  if (!widget.hideForgotPasswordButton)
+                    _buildForgotPassword(theme, messages)
+                  else
+                    SizedBox.fromSize(
+                      size: const Size.fromHeight(16),
+                    ),
+                  _buildSubmitButton(theme, messages, auth),
+                  if (!widget.hideSignUpButton)
+                    _buildSwitchAuthButton(theme, messages, auth, loginTheme)
+                  else
+                    SizedBox.fromSize(
+                      size: const Size.fromHeight(10),
+                    ),
+                  if (auth.loginProviders.isNotEmpty &&
+                      !widget.hideProvidersTitle)
+                    _buildProvidersTitleFirst(messages)
+                  else
+                    Container()
+                ],
                 _buildProvidersLogInButton(theme, messages, auth, loginTheme),
               ],
             ),

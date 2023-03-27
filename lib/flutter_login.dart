@@ -306,6 +306,7 @@ class FlutterLogin extends StatefulWidget {
     this.confirmSignupKeyboardType,
     this.headerWidget,
     this.onSwitchToAdditionalFields,
+    this.hideAuth = false,
   })  : assert((logo is String?) || (logo is ImageProvider?)),
         logo = logo is String ? AssetImage(logo) : logo as ImageProvider?;
 
@@ -447,6 +448,8 @@ class FlutterLogin extends StatefulWidget {
 
   /// A widget that can be placed on top of the loginCard.
   final Widget? headerWidget;
+
+  final bool hideAuth;
 
   static String? defaultEmailValidator(String? value) {
     if (value == null || value.isEmpty || !Regex.email.hasMatch(value)) {
@@ -735,7 +738,11 @@ class _FlutterLoginState extends State<FlutterLogin>
         titleMedium: textFieldStyle,
         titleSmall: footerStyle,
         labelLarge: buttonStyle,
-      ), colorScheme: Theme.of(context).colorScheme.copyWith(secondary: accentColor).copyWith(error: errorColor),
+      ),
+      colorScheme: Theme.of(context)
+          .colorScheme
+          .copyWith(secondary: accentColor)
+          .copyWith(error: errorColor),
     );
   }
 
@@ -836,6 +843,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                         confirmSignupKeyboardType:
                             widget.confirmSignupKeyboardType,
                         introWidget: widget.headerWidget,
+                        hideAuth: widget.hideAuth,
                       ),
                     ),
                     Positioned(
