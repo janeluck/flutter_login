@@ -20,6 +20,7 @@ class _LoginCard extends StatefulWidget {
     this.hideProvidersTitle = false,
     this.introWidget,
     this.hideAuth = false,
+    this.hideToast = false,
   });
 
   final AnimationController loadingController;
@@ -39,6 +40,7 @@ class _LoginCard extends StatefulWidget {
   final Future<bool> Function() requireSignUpConfirmation;
   final Widget? introWidget;
   final bool hideAuth;
+  final bool hideToast;
 
   @override
   _LoginCardState createState() => _LoginCardState();
@@ -220,7 +222,10 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     await _submitController.reverse();
 
     if (!DartHelper.isNullOrEmpty(error)) {
-      showErrorToast(context, messages.flushbarTitleError, error!);
+      if (!widget.hideToast) {
+        showErrorToast(context, messages.flushbarTitleError, error!);
+      }
+
       Future.delayed(const Duration(milliseconds: 271), () {
         if (mounted) {
           setState(() => _showShadow = true);
@@ -243,11 +248,13 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
         _switchAuthMode();
         return false;
       } else if (!widget.loginAfterSignUp) {
-        showSuccessToast(
-          context,
-          messages.flushbarTitleSuccess,
-          messages.signUpSuccess,
-        );
+        if (!widget.hideToast) {
+          showSuccessToast(
+            context,
+            messages.flushbarTitleSuccess,
+            messages.signUpSuccess,
+          );
+        }
         _switchAuthMode();
         setState(() => _isSubmitting = false);
         return false;
@@ -269,7 +276,9 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       final messages = Provider.of<LoginMessages>(context, listen: false);
 
       if (!DartHelper.isNullOrEmpty(error)) {
-        showErrorToast(context, messages.flushbarTitleError, error!);
+        if (!widget.hideToast) {
+          showErrorToast(context, messages.flushbarTitleError, error!);
+        }
         return false;
       }
 
@@ -298,7 +307,9 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
 
     if (!DartHelper.isNullOrEmpty(error)) {
       await control?.reverse();
-      showErrorToast(context, messages.flushbarTitleError, error!);
+      if (!widget.hideToast) {
+        showErrorToast(context, messages.flushbarTitleError, error!);
+      }
       Future.delayed(const Duration(milliseconds: 271), () {
         if (mounted) {
           setState(() => _showShadow = true);
@@ -322,7 +333,10 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
         );
         await control?.reverse();
         if (!DartHelper.isNullOrEmpty(error)) {
-          showErrorToast(context, messages.flushbarTitleError, error!);
+          if (!widget.hideToast) {
+            showErrorToast(context, messages.flushbarTitleError, error!);
+          }
+
           Future.delayed(const Duration(milliseconds: 271), () {
             if (mounted) {
               setState(() => _showShadow = true);

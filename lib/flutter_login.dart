@@ -307,6 +307,7 @@ class FlutterLogin extends StatefulWidget {
     this.headerWidget,
     this.onSwitchToAdditionalFields,
     this.hideAuth = false,
+    this.hideToast = false,
   })  : assert((logo is String?) || (logo is ImageProvider?)),
         logo = logo is String ? AssetImage(logo) : logo as ImageProvider?;
 
@@ -450,6 +451,7 @@ class FlutterLogin extends StatefulWidget {
   final Widget? headerWidget;
 
   final bool hideAuth;
+  final bool hideToast;
 
   static String? defaultEmailValidator(String? value) {
     if (value == null || value.isEmpty || !Regex.email.hasMatch(value)) {
@@ -844,6 +846,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                             widget.confirmSignupKeyboardType,
                         introWidget: widget.headerWidget,
                         hideAuth: widget.hideAuth,
+                        hideToast: widget.hideToast,
                       ),
                     ),
                     Positioned(
